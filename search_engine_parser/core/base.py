@@ -287,7 +287,7 @@ class BaseSearch:
                          proxy_auth=proxy_auth))
         return self.get_results(soup, **kwargs)
 
-    async def async_search(self, query=None, page=1, cache=True, proxy=None, proxy_auth=None, **kwargs):
+    async def async_search(self, query=None, page=1, cache=True, **kwargs):
         """
         Query the search engine but in async mode
 
@@ -295,14 +295,12 @@ class BaseSearch:
         :type query: str
         :param page: Page to be displayed, defaults to 1
         :type page: int
-        :param proxy: proxy address to make use off
-        :type proxy: str
-        :param proxy_auth: (user, password) tuple to authenticate proxy
-        :type proxy_auth: (str, str)
         :return: dictionary. Containing titles, links, netlocs and descriptions.
         """
         # Pages can only be from 1-N
         if page == 0:
             page = 1
-        soup = await self.get_soup(self.get_search_url(query, page, **kwargs), cache=cache, proxy=proxy, proxy_auth=(proxy_user, proxy_password))
+        soup = await self.get_soup(
+            self.get_search_url(query, page, **kwargs), cache=cache
+        )
         return self.get_results(soup, **kwargs)
