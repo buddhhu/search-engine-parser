@@ -5,9 +5,7 @@ REQUIRED_PYTHON = (3, 5)
 
 # Load requirements
 REQUIREMENTS = 'requirements/main.txt'
-CLI_REQUIREMENTS = 'requirements/cli.txt'
 REQUIREMENTS = [line.strip('\n') for line in open(REQUIREMENTS).readlines()]
-CLI_REQUIREMENTS = [line.strip('\n') for line in open(CLI_REQUIREMENTS).readlines()]
 
 with open("README.md", "r", encoding="utf8") as fh:
     LONG_DESCRIPTION = fh.read()
@@ -57,8 +55,5 @@ setuptools.setup(
         'requirements': ['*.*'],
     },
     include_package_data=True,
-    extras_require={
-        'cli': CLI_REQUIREMENTS
-    },
     python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
 )
