@@ -18,6 +18,7 @@ USER_AGENT_LIST = [
     "Chrome/19.0.1084.46 Safari/536.5",
     "Mozilla/5.0 (Windows; Windows NT 6.1) AppleWebKit/536.5 (KHTML, like Gecko) "
     "Chrome/19.0.1084.46 Safari/536.5",
+    "Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Mobile Safari/537.36",
 ]
 
 
