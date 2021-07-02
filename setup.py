@@ -1,11 +1,12 @@
 import re
+
 import setuptools
 
 REQUIRED_PYTHON = (3, 5)
 
 # Load requirements
-REQUIREMENTS = 'requirements/main.txt'
-REQUIREMENTS = [line.strip('\n') for line in open(REQUIREMENTS).readlines()]
+REQUIREMENTS = "requirements/main.txt"
+REQUIREMENTS = [line.strip("\n") for line in open(REQUIREMENTS).readlines()]
 
 with open("README.md", "r", encoding="utf8") as fh:
     LONG_DESCRIPTION = fh.read()
@@ -18,12 +19,12 @@ with open("search_engine_parser/__init__.py", "rt", encoding="utf8") as f:
 setuptools.setup(
     name="search-engine-parser",
     version=VERSION,
-    author='Domnan Diretnan, Mmadu Manasseh',
+    author="Domnan Diretnan, Mmadu Manasseh",
     author_email="diretnandomnan@gmail.com",
     description="scrapes search engine pages for query titles, descriptions and links",
     url="https://github.com/bisoncorps/search-engine-parser",
     project_urls={
-        "Documentation":"https://search-engine-parser.readthedocs.io/en/latest",
+        "Documentation": "https://search-engine-parser.readthedocs.io/en/latest",
         "Source": "https://github.com/bisoncorps/search-engine-parser",
     },
     packages=setuptools.find_packages(),
@@ -31,7 +32,7 @@ setuptools.setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     license="MIT",
-    keywords='\
+    keywords="\
         search-engine \
         search \
         parser \
@@ -41,19 +42,17 @@ setuptools.setup(
         yandex \
         stackoverflow \
         github \
-        baidu ',
-    entry_points={'console_scripts': [
-        'pysearch=search_engine_parser.core.cli:runner'
-    ]},
+        baidu ",
+    entry_points={"console_scripts": ["pysearch=search_engine_parser.core.cli:runner"]},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
     package_data={
-        '': ['*.*'],
-        'requirements': ['*.*'],
+        "": ["*.*"],
+        "requirements": ["*.*"],
     },
     include_package_data=True,
-    python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
+    python_requires=">={}.{}".format(*REQUIRED_PYTHON),
 )

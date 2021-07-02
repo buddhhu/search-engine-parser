@@ -1,13 +1,8 @@
 """@desc
 		Parser for google search results
 """
-import sys
-from urllib.parse import (
-    urljoin,
-    parse_qs,
-    unquote
-)
 import urllib.parse as urlparse
+from urllib.parse import parse_qs, unquote, urljoin
 
 from search_engine_parser.core.base import BaseSearch, ReturnType, SearchItem
 
@@ -16,13 +11,16 @@ class Search(BaseSearch):
     """
     Searches Google for string
     """
+
     name = "Google"
     base_url = "https://www.google.com/"
-    summary = "\tNo need for further introductions. The search engine giant holds the first "\
-        "place in search with a stunning difference of 65% from second in place Bing.\n"\
-        "\tAccording to the latest netmarketshare report (November 2018) 73% of searches "\
-        "were powered by Google and only 7.91% by Bing.\n\tGoogle is also dominating the "\
+    summary = (
+        "\tNo need for further introductions. The search engine giant holds the first "
+        "place in search with a stunning difference of 65% from second in place Bing.\n"
+        "\tAccording to the latest netmarketshare report (November 2018) 73% of searches "
+        "were powered by Google and only 7.91% by Bing.\n\tGoogle is also dominating the "
         "mobile/tablet search engine market share with 81%!"
+    )
 
     def __init__(self):
         super().__init__()
@@ -30,12 +28,12 @@ class Search(BaseSearch):
 
     def get_params(self, query=None, offset=None, page=None, **kwargs):
         params = {}
-        params["start"] = (page-1) * 10
+        params["start"] = (page - 1) * 10
         params["q"] = query
         params["gbv"] = 1
         # additional parameters will be considered
         if kwargs.get("hl"):
-    	    params["hl"] = kwargs.get("hl")
+            params["hl"] = kwargs.get("hl")
         return params
 
     def parse_url(self, url):
@@ -46,7 +44,7 @@ class Search(BaseSearch):
         Parses Google Search Soup for results
         """
         # find all class_='g' => each result
-        return soup.find_all('div', class_="ZINbbc xpd O9g5cc uUPGi")
+        return soup.find_all("div", class_="ZINbbc xpd O9g5cc uUPGi")
 
     def parse_single_result(self, single_result, return_type=ReturnType.FULL, **kwargs):
         """
@@ -58,12 +56,14 @@ class Search(BaseSearch):
         :rtype: dict
         """
         # Some unneeded details shown such as suggestions should be ignore
-        if (single_result.find("h2", class_="wITvVb") and single_result.find("div", class_="LKSyXe"))\
-                or single_result.find("div", class_="X7NTVe"):
+        if (
+            single_result.find("h2", class_="wITvVb")
+            and single_result.find("div", class_="LKSyXe")
+        ) or single_result.find("div", class_="X7NTVe"):
             return
 
         results = SearchItem()
-        els = single_result.find_all('div', class_='kCrYT')
+        els = single_result.find_all("div", class_="kCrYT")
         if len(els) < 2:
             return
 
@@ -72,35 +72,37 @@ class Search(BaseSearch):
 
         # Get the text and link
         if return_type in (ReturnType.FULL, ReturnType.TITLE):
-            link_tag = r_elem.find('a')
+            link_tag = r_elem.find("a")
             if link_tag:
-                title = link_tag.find('h3').text
+                title = link_tag.find("h3").text
             else:
                 r_elem = els[1]
-                title = r_elem.find('div', class_='BNeawe').text
-            results['titles'] = title
+                title = r_elem.find("div", class_="BNeawe").text
+            results["titles"] = title
 
         if return_type in (ReturnType.FULL, ReturnType.LINK):
-            link_tag = r_elem.find('a')
+            link_tag = r_elem.find("a")
             if link_tag:
-                raw_link = link_tag.get('href')
+                raw_link = link_tag.get("href")
                 raw_url = urljoin(self.base_url, raw_link)
-                results['raw_urls'] = raw_url
-                results['links'] = self.clean_url(raw_url)
+                results["raw_urls"] = raw_url
+                results["links"] = self.clean_url(raw_url)
 
         if return_type in (ReturnType.FULL, ReturnType.DESCRIPTION):
             # Second Div contains Description
             desc_tag = els[1]
-            if return_type in (ReturnType.FULL, ReturnType.LINK) and not results.get('links'):
-                link_tag = desc_tag.find('a')
+            if return_type in (ReturnType.FULL, ReturnType.LINK) and not results.get(
+                "links"
+            ):
+                link_tag = desc_tag.find("a")
                 if link_tag:
                     desc_tag = els[0]
-                    raw_link = link_tag.get('href')
+                    raw_link = link_tag.get("href")
                     raw_url = urljoin(self.base_url, raw_link)
-                    results['raw_urls'] = raw_url
-                    results['links'] = self.clean_url(raw_url)
+                    results["raw_urls"] = raw_url
+                    results["links"] = self.clean_url(raw_url)
             desc = desc_tag.text
-            results['descriptions'] = desc
+            results["descriptions"] = desc
         return results
 
     def clean_url(self, url):
@@ -112,9 +114,9 @@ class Search(BaseSearch):
         """
         parsed = urlparse.urlparse(url)
         url_qs = parse_qs(parsed.query)
-        if 'q' in url_qs:
-            return unquote(url_qs['q'][0])
-        elif 'url' in url_qs:
-            return unquote(url_qs['url'][0])
+        if "q" in url_qs:
+            return unquote(url_qs["q"][0])
+        elif "url" in url_qs:
+            return unquote(url_qs["url"][0])
         # Add more cases here.
         return url

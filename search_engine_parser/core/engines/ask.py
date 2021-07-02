@@ -8,14 +8,17 @@ class Search(BaseSearch):
     """
     Searches Ask for string
     """
+
     name = "Ask"
 
     search_url = "https://www.ask.com/web?"
 
-    summary = "\t Formerly known as Ask Jeeves, Ask.com receives approximately 0.42% of the search"\
-        " share. ASK is based on a question/answer format where most questions are answered by "\
-        "other users or are in the form of polls.\nIt also has the general search functionality "\
+    summary = (
+        "\t Formerly known as Ask Jeeves, Ask.com receives approximately 0.42% of the search"
+        " share. ASK is based on a question/answer format where most questions are answered by "
+        "other users or are in the form of polls.\nIt also has the general search functionality "
         "but the results returned lack quality compared to Google or even Bing and Yahoo."
+    )
 
     def get_params(self, query=None, page=None, offset=None, **kwargs):
         params = {}
@@ -32,7 +35,7 @@ class Search(BaseSearch):
         Parses Ask Search Soup for results
         """
         # find all class_='PartialSearchResults-item' => each result
-        return soup.find_all('div', class_="PartialSearchResults-item")
+        return soup.find_all("div", class_="PartialSearchResults-item")
 
     def parse_single_result(self, single_result, return_type=ReturnType.FULL, **kwargs):
         """
@@ -46,13 +49,14 @@ class Search(BaseSearch):
 
         rdict = SearchItem()
         if return_type in (ReturnType.FULL, return_type.TITLE):
-            rdict["titles"] = single_result.find('a').text
+            rdict["titles"] = single_result.find("a").text
 
         if return_type in (ReturnType.FULL, return_type.TITLE):
             rdict["links"] = single_result.a["href"]
 
         if return_type in (ReturnType.FULL, return_type.TITLE):
             rdict["descriptions"] = single_result.find(
-                'p', class_="PartialSearchResults-item-abstract").text
+                "p", class_="PartialSearchResults-item-abstract"
+            ).text
 
         return rdict

@@ -3,13 +3,11 @@
 """
 
 import asyncio
-import random
 from abc import ABCMeta, abstractmethod
 from contextlib import suppress
 from enum import Enum, unique
 from urllib.parse import urlencode, urlparse
 
-import aiohttp
 from bs4 import BeautifulSoup
 
 from search_engine_parser.core import utils
@@ -36,14 +34,15 @@ class SearchItem(dict):
     >>> result["descriptions"]
     Same description
     """
+
     def __getitem__(self, value):
-        """ Allow getting by index and by type ('descriptions', 'links'...)"""
+        """Allow getting by index and by type ('descriptions', 'links'...)"""
         try:
             return super().__getitem__(value)
         except KeyError:
             pass
-        if not value.endswith('s'):
-            value += 's'
+        if not value.endswith("s"):
+            value += "s"
         return super().__getitem__(value)
 
 
@@ -69,7 +68,7 @@ class SearchResult:
         self.results.append(value)
 
     def __getitem__(self, value):
-        """ Allow getting by index and by type ('descriptions', 'links'...)"""
+        """Allow getting by index and by type ('descriptions', 'links'...)"""
         if isinstance(value, int):
             return self.results[value]
         l = []
@@ -127,7 +126,7 @@ class BaseSearch:
         raise NotImplementedError("subclasses must define method <parse_results>")
 
     def get_cache_handler(self):
-        """ Return Cache Handler to use"""
+        """Return Cache Handler to use"""
 
         return utils.CacheHandler()
 
@@ -153,7 +152,7 @@ class BaseSearch:
         return search_results
 
     def get_params(self, query=None, page=None, offset=None, **kwargs):
-        """ This  function should be overwritten to return a dictionary of query params"""
+        """This  function should be overwritten to return a dictionary of query params"""
         return {"q": query, "page": page}
 
     def headers(self):
@@ -213,7 +212,8 @@ class BaseSearch:
         # such as google.de and google.com
         if kwargs.get("url"):
             new_url = urlparse(kwargs.pop("url"))
-            # When passing url without scheme e.g google.de, url is parsed as path
+            # When passing url without scheme e.g google.de, url is parsed as
+            # path
             if not new_url.netloc:
                 url = url._replace(netloc=new_url.path)
             else:
@@ -224,7 +224,7 @@ class BaseSearch:
         return self._parsed_url.geturl()
 
     def get_results(self, soup, **kwargs):
-        """ Get results from soup"""
+        """Get results from soup"""
 
         search_results = None
         results = self.parse_soup(soup)
@@ -241,13 +241,12 @@ class BaseSearch:
             search_results = self.parse_result(results, **kwargs)
         # AttributeError occurs as it cannot pass the returned soup
         except AttributeError as e:
-        #    raise NoResultsOrTrafficError(
-        #        "The returned results could not be parsed. This might be due to site updates or "
-        #        "server errors. Drop an issue at https://github.com/bisoncorps/search-engine-parser"
-        #        " if this persists"
-        #    )
+            #    raise NoResultsOrTrafficError(
+            #        "The returned results could not be parsed. This might be due to site updates or "
+            #        "server errors. Drop an issue at https://github.com/bisoncorps/search-engine-parser"
+            #        " if this persists"
+            #    )
             print(type(e) + ": " + str(e))
-            pass
 
         return search_results
 

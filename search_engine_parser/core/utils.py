@@ -1,7 +1,8 @@
-import os
-import random
-import pickle
 import hashlib
+import os
+import pickle
+import random
+
 import aiohttp
 from fake_useragent import UserAgent
 
@@ -26,10 +27,9 @@ def get_rand_user_agent():
     user_agent = random.choice(USER_AGENT_LIST)
     try:
         user_agent = UserAgent().random
-    except:
-       pass
+    except BaseException:
+        pass
     return user_agent
-    
 
 
 class CacheHandler:
@@ -38,14 +38,18 @@ class CacheHandler:
             os.makedirs("cache")
         self.cache = os.path.join(FILEPATH, "cache")
         enginelist = os.listdir(os.path.join(FILEPATH, "engines"))
-        self.engine_cache = {i[:-3]: os.path.join(self.cache, i[:-3]) for i in enginelist if i not in
-                             ("__init__.py")}
+        self.engine_cache = {
+            i[:-3]: os.path.join(self.cache, i[:-3])
+            for i in enginelist
+            if i not in ("__init__.py")
+        }
         for cache in self.engine_cache.values():
             if not os.path.exists(cache):
                 os.makedirs(cache)
 
-    async def get_source(self, engine, url, headers, cache=True,
-                        proxy=None, proxy_auth=None):
+    async def get_source(
+        self, engine, url, headers, cache=True, proxy=None, proxy_auth=None
+    ):
         """
         Retrieves source code of webpage from internet or from cache
 
@@ -68,17 +72,17 @@ class CacheHandler:
         engine = engine.lower()
         cache_path = os.path.join(self.engine_cache[engine], urlhash)
         if os.path.exists(cache_path) and cache:
-            with open(cache_path, 'rb') as stream:
+            with open(cache_path, "rb") as stream:
                 return pickle.load(stream), True
-        get_vars = { 'url':url, 'headers':headers }
+        get_vars = {"url": url, "headers": headers}
         if proxy and proxy_auth:
             auth = aiohttp.BasicAuth(*proxy_auth)
-            get_vars.update({'proxy':proxy, 'proxy_auth': auth})
+            get_vars.update({"proxy": proxy, "proxy_auth": auth})
 
         async with aiohttp.ClientSession() as session:
             async with session.get(**get_vars) as resp:
                 html = await resp.text()
-                with open(cache_path, 'wb') as stream:
+                with open(cache_path, "wb") as stream:
                     pickle.dump(str(html), stream)
                 return str(html), False
 
