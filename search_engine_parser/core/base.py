@@ -246,7 +246,7 @@ class BaseSearch:
         #        "server errors. Drop an issue at https://github.com/bisoncorps/search-engine-parser"
         #        " if this persists"
         #    )
-            print(type(e) ": " str(e))
+            print(type(e) + ": " + str(e))
             pass
 
         return search_results
